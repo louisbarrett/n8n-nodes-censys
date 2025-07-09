@@ -3,7 +3,7 @@ import { INodeTypeDescription } from 'n8n-workflow';
 export const censysDescription: INodeTypeDescription = {
 	displayName: 'Censys',
 	name: 'censys',
-	icon: 'file:censys.jpeg',
+	icon: 'file:censys.png',
 	group: ['transform'],
 	version: 1,
 	subtitle: '={{$parameter["operation"]}}',

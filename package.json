@@ -1,0 +1,66 @@
+{
+  "name": "n8n-nodes-censys",
+  "version": "0.1.0",
+  "description": "n8n node for Censys Internet Search API integration",
+  "keywords": [
+    "n8n-community-node-package",
+    "censys",
+    "internet search",
+    "security",
+    "asset discovery",
+    "network scanning"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/censys/n8n-nodes-censys",
+  "author": {
+    "name": "Censys Community",
+    "email": "support@censys.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/censys/n8n-nodes-censys.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && gulp build:icons && npx copyfiles -u 1 nodes/Censys/*.json dist/nodes/Censys/",
+    "dev": "tsc --watch",
+    "format": "prettier nodes credentials --write",
+    "lint": "eslint nodes credentials package.json",
+    "lintfix": "eslint nodes credentials package.json --fix",
+    "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/CensysApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Censys/Censys.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^18.19.117",
+    "@typescript-eslint/parser": "~5.45",
+    "copyfiles": "^2.4.1",
+    "eslint": "^8.0.0",
+    "eslint-plugin-n8n-nodes-base": "^1.11.0",
+    "gulp": "^4.0.2",
+    "gulp-rename": "^2.0.0",
+    "gulp-svgmin": "^4.1.0",
+    "n8n-core": "^0.125.0",
+    "n8n-workflow": "^0.107.0",
+    "prettier": "^2.7.1",
+    "typescript": "~4.8.4"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "engines": {
+    "node": ">=14.15.0"
+  }
+}

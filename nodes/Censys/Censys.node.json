@@ -1,0 +1,25 @@
+{
+	"node": "n8n-nodes-censys.Censys",
+	"nodeVersion": "1.0.0",
+	"codex": {
+		"categories": ["Security", "Network", "Data & Storage"],
+		"subcategories": {
+			"Security": ["Vulnerability Scanning", "Asset Discovery"],
+			"Network": ["Internet Scanning", "Host Discovery"],
+			"Data & Storage": ["Search", "Query"]
+		},
+		"resources": {
+			"primaryDocumentation": [
+				{
+					"url": "https://search.censys.io/api"
+				}
+			],
+			"credentialDocumentation": [
+				{
+					"url": "https://search.censys.io/account/api"
+				}
+			]
+		},
+		"alias": ["Internet Search", "Host Discovery", "Asset Discovery", "Security Scanning"]
+	}
+} 

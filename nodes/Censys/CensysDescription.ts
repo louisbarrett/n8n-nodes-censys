@@ -51,6 +51,71 @@ export const censysDescription: INodeTypeDescription = {
 					value: 'getHostCertificates',
 					description: 'Get certificates presented by a specific host',
 				},
+				{
+					name: 'List Tags',
+					value: 'listTags',
+					description: 'Get a list of all tags for the team',
+				},
+				{
+					name: 'Create Tag',
+					value: 'createTag',
+					description: 'Create a new tag',
+				},
+				{
+					name: 'Get Tag',
+					value: 'getTag',
+					description: 'Get details of a specific tag',
+				},
+				{
+					name: 'Update Tag',
+					value: 'updateTag',
+					description: 'Update an existing tag',
+				},
+				{
+					name: 'Delete Tag',
+					value: 'deleteTag',
+					description: 'Delete a tag',
+				},
+				{
+					name: 'Get Host Tags',
+					value: 'getHostTags',
+					description: 'Get all tags assigned to a specific host',
+				},
+				{
+					name: 'Add Host Tag',
+					value: 'addHostTag',
+					description: 'Add a tag to a specific host',
+				},
+				{
+					name: 'Remove Host Tag',
+					value: 'removeHostTag',
+					description: 'Remove a tag from a specific host',
+				},
+				{
+					name: 'Get Certificate Tags',
+					value: 'getCertTags',
+					description: 'Get all tags assigned to a specific certificate',
+				},
+				{
+					name: 'Add Certificate Tag',
+					value: 'addCertTag',
+					description: 'Add a tag to a specific certificate',
+				},
+				{
+					name: 'Remove Certificate Tag',
+					value: 'removeCertTag',
+					description: 'Remove a tag from a specific certificate',
+				},
+				{
+					name: 'Get Tag Hosts',
+					value: 'getTagHosts',
+					description: 'Get all hosts assigned to a specific tag',
+				},
+				{
+					name: 'Get Tag Certificates',
+					value: 'getTagCertificates',
+					description: 'Get all certificates assigned to a specific tag',
+				},
 			],
 			default: 'searchHosts',
 		},
@@ -205,7 +270,7 @@ export const censysDescription: INodeTypeDescription = {
 			required: true,
 			displayOptions: {
 				show: {
-					operation: ['getHost', 'getHostNames', 'getHostCertificates'],
+					operation: ['getHost', 'getHostNames', 'getHostCertificates', 'getHostTags', 'addHostTag', 'removeHostTag'],
 				},
 			},
 			description: 'IP address of the host to query',
@@ -305,6 +370,62 @@ export const censysDescription: INodeTypeDescription = {
 				},
 			},
 			description: 'Cursor token for pagination',
+		},
+
+		// Tag Management parameters
+		{
+			displayName: 'Tag ID',
+			name: 'tagId',
+			type: 'string',
+			default: '',
+			required: true,
+			displayOptions: {
+				show: {
+					operation: ['getTag', 'updateTag', 'deleteTag', 'addHostTag', 'removeHostTag', 'addCertTag', 'removeCertTag', 'getTagHosts', 'getTagCertificates'],
+				},
+			},
+			description: 'Unique identifier of the tag',
+		},
+		{
+			displayName: 'Tag Name',
+			name: 'tagName',
+			type: 'string',
+			default: '',
+			required: true,
+			displayOptions: {
+				show: {
+					operation: ['createTag', 'updateTag'],
+				},
+			},
+			description: 'Name for the tag',
+		},
+		{
+			displayName: 'Tag Color',
+			name: 'tagColor',
+			type: 'string',
+			default: '',
+			displayOptions: {
+				show: {
+					operation: ['createTag', 'updateTag'],
+				},
+			},
+			description: 'Color for the tag (hex format without #, e.g., "ff6113")',
+			placeholder: 'ff6113',
+		},
+
+		// Certificate parameters
+		{
+			displayName: 'Certificate Fingerprint',
+			name: 'certificateFingerprint',
+			type: 'string',
+			default: '',
+			required: true,
+			displayOptions: {
+				show: {
+					operation: ['getCertTags', 'addCertTag', 'removeCertTag'],
+				},
+			},
+			description: 'SHA-256 fingerprint of the certificate',
 		},
 
 		// Additional Options

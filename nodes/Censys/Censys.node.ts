@@ -191,6 +191,255 @@ export class Censys implements INodeType {
 						result = response as IDataObject;
 						break;
 					}
+					// Tag Management Operations
+					case 'listTags': {
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'GET',
+								url: `${baseUrl}/v2/tags`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
+					case 'createTag': {
+						const tagName = this.getNodeParameter('tagName', i) as string;
+						const tagColor = this.getNodeParameter('tagColor', i, '') as string;
+
+						const body: IDataObject = {
+							name: tagName,
+						};
+
+						if (tagColor) {
+							body.metadata = {
+								color: tagColor,
+							};
+						}
+
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'POST',
+								url: `${baseUrl}/v2/tags`,
+								body: body,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
+					case 'getTag': {
+						const tagId = this.getNodeParameter('tagId', i) as string;
+
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'GET',
+								url: `${baseUrl}/v2/tags/${encodeURIComponent(tagId)}`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
+					case 'updateTag': {
+						const tagId = this.getNodeParameter('tagId', i) as string;
+						const tagName = this.getNodeParameter('tagName', i) as string;
+						const tagColor = this.getNodeParameter('tagColor', i, '') as string;
+
+						const body: IDataObject = {
+							name: tagName,
+						};
+
+						if (tagColor) {
+							body.metadata = {
+								color: tagColor,
+							};
+						}
+
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'PUT',
+								url: `${baseUrl}/v2/tags/${encodeURIComponent(tagId)}`,
+								body: body,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
+					case 'deleteTag': {
+						const tagId = this.getNodeParameter('tagId', i) as string;
+
+						await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'DELETE',
+								url: `${baseUrl}/v2/tags/${encodeURIComponent(tagId)}`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = { success: true, message: 'Tag deleted successfully' };
+						break;
+					}
+					case 'getHostTags': {
+						const ipAddress = this.getNodeParameter('ipAddress', i) as string;
+
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'GET',
+								url: `${baseUrl}/v2/hosts/${encodeURIComponent(ipAddress)}/tags`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
+					case 'addHostTag': {
+						const ipAddress = this.getNodeParameter('ipAddress', i) as string;
+						const tagId = this.getNodeParameter('tagId', i) as string;
+
+						await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'PUT',
+								url: `${baseUrl}/v2/hosts/${encodeURIComponent(ipAddress)}/tags/${encodeURIComponent(tagId)}`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = { success: true, message: 'Tag added to host successfully' };
+						break;
+					}
+					case 'removeHostTag': {
+						const ipAddress = this.getNodeParameter('ipAddress', i) as string;
+						const tagId = this.getNodeParameter('tagId', i) as string;
+
+						await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'DELETE',
+								url: `${baseUrl}/v2/hosts/${encodeURIComponent(ipAddress)}/tags/${encodeURIComponent(tagId)}`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = { success: true, message: 'Tag removed from host successfully' };
+						break;
+					}
+					case 'getCertTags': {
+						const certificateFingerprint = this.getNodeParameter('certificateFingerprint', i) as string;
+
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'GET',
+								url: `${baseUrl}/v2/certificates/${encodeURIComponent(certificateFingerprint)}/tags`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
+					case 'addCertTag': {
+						const certificateFingerprint = this.getNodeParameter('certificateFingerprint', i) as string;
+						const tagId = this.getNodeParameter('tagId', i) as string;
+
+						await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'PUT',
+								url: `${baseUrl}/v2/certificates/${encodeURIComponent(certificateFingerprint)}/tags/${encodeURIComponent(tagId)}`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = { success: true, message: 'Tag added to certificate successfully' };
+						break;
+					}
+					case 'removeCertTag': {
+						const certificateFingerprint = this.getNodeParameter('certificateFingerprint', i) as string;
+						const tagId = this.getNodeParameter('tagId', i) as string;
+
+						await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'DELETE',
+								url: `${baseUrl}/v2/certificates/${encodeURIComponent(certificateFingerprint)}/tags/${encodeURIComponent(tagId)}`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = { success: true, message: 'Tag removed from certificate successfully' };
+						break;
+					}
+					case 'getTagHosts': {
+						const tagId = this.getNodeParameter('tagId', i) as string;
+
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'GET',
+								url: `${baseUrl}/v2/tags/${encodeURIComponent(tagId)}/hosts`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
+					case 'getTagCertificates': {
+						const tagId = this.getNodeParameter('tagId', i) as string;
+
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'GET',
+								url: `${baseUrl}/v2/tags/${encodeURIComponent(tagId)}/certificates`,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
 					default:
 						throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);
 				}

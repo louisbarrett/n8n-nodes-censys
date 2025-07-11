@@ -52,6 +52,21 @@ export const censysDescription: INodeTypeDescription = {
 					description: 'Get certificates presented by a specific host',
 				},
 				{
+					name: 'Search Certificates',
+					value: 'searchCertificates',
+					description: 'Search for certificates matching specified criteria',
+				},
+				{
+					name: 'Aggregate Certificates',
+					value: 'aggregateCertificates',
+					description: 'Aggregate certificates that match a query into buckets',
+				},
+				{
+					name: 'Get Certificate Details',
+					value: 'getCertificate',
+					description: 'Get detailed information about a specific certificate by SHA-256 fingerprint',
+				},
+				{
 					name: 'List Tags',
 					value: 'listTags',
 					description: 'Get a list of all tags for the team',
@@ -129,10 +144,10 @@ export const censysDescription: INodeTypeDescription = {
 			required: true,
 			displayOptions: {
 				show: {
-					operation: ['searchHosts', 'aggregateHosts'],
+					operation: ['searchHosts', 'aggregateHosts', 'searchCertificates', 'aggregateCertificates'],
 				},
 			},
-			description: 'Query using Censys Search Language (e.g., "services.service_name: HTTP")',
+			description: 'Query using Censys Search Language (e.g., "services.service_name: HTTP" for hosts or "parsed.subject.country: US" for certificates)',
 		},
 		{
 			displayName: 'Results Per Page',
@@ -145,7 +160,7 @@ export const censysDescription: INodeTypeDescription = {
 			},
 			displayOptions: {
 				show: {
-					operation: ['searchHosts'],
+					operation: ['searchHosts', 'searchCertificates'],
 				},
 			},
 			description: 'Maximum number of results per page (1-100)',
@@ -182,28 +197,14 @@ export const censysDescription: INodeTypeDescription = {
 		{
 			displayName: 'Sort',
 			name: 'sort',
-			type: 'options',
-			options: [
-				{
-					name: 'Relevance',
-					value: 'RELEVANCE',
-				},
-				{
-					name: 'Ascending',
-					value: 'ASCENDING',
-				},
-				{
-					name: 'Descending',
-					value: 'DESCENDING',
-				},
-			],
-			default: 'RELEVANCE',
+			type: 'string',
+			default: '',
 			displayOptions: {
 				show: {
-					operation: ['searchHosts'],
+					operation: ['searchHosts', 'searchCertificates'],
 				},
 			},
-			description: 'Sort order for results',
+			description: 'Sort fields as comma-separated list (e.g., "parsed.subject.country,-fingerprint_sha256"). Use "-" prefix for descending order. For hosts, can also use RELEVANCE, ASCENDING, DESCENDING.',
 		},
 		{
 			displayName: 'Fields',
@@ -212,10 +213,10 @@ export const censysDescription: INodeTypeDescription = {
 			default: '',
 			displayOptions: {
 				show: {
-					operation: ['searchHosts'],
+					operation: ['searchHosts', 'searchCertificates'],
 				},
 			},
-			description: 'Comma-separated list of fields to return (paid users only)',
+			description: 'Comma-separated list of fields to return (e.g., "names,parsed.issuer.organization"). For hosts, this is a paid feature.',
 		},
 		{
 			displayName: 'Cursor',
@@ -224,7 +225,7 @@ export const censysDescription: INodeTypeDescription = {
 			default: '',
 			displayOptions: {
 				show: {
-					operation: ['searchHosts'],
+					operation: ['searchHosts', 'searchCertificates'],
 				},
 			},
 			description: 'Cursor token for pagination',
@@ -233,7 +234,7 @@ export const censysDescription: INodeTypeDescription = {
 		// Aggregate Hosts parameters
 		{
 			displayName: 'Field',
-			name: 'field',
+			name: 'fieldHost',
 			type: 'string',
 			default: '',
 			required: true,
@@ -246,7 +247,7 @@ export const censysDescription: INodeTypeDescription = {
 		},
 		{
 			displayName: 'Number of Buckets',
-			name: 'numBuckets',
+			name: 'numBucketsHost',
 			type: 'number',
 			default: 50,
 			typeOptions: {
@@ -370,6 +371,50 @@ export const censysDescription: INodeTypeDescription = {
 				},
 			},
 			description: 'Cursor token for pagination',
+		},
+
+		// Certificate-specific parameters
+		{
+			displayName: 'Field',
+			name: 'fieldCert',
+			type: 'string',
+			default: '',
+			required: true,
+			displayOptions: {
+				show: {
+					operation: ['aggregateCertificates'],
+				},
+			},
+			description: 'Field to aggregate on (e.g., "parsed.issuer.organization", "parsed.subject.country")',
+		},
+		{
+			displayName: 'Number of Buckets',
+			name: 'numBucketsCert',
+			type: 'number',
+			default: 50,
+			typeOptions: {
+				minValue: 1,
+				maxValue: 100,
+			},
+			displayOptions: {
+				show: {
+					operation: ['aggregateCertificates'],
+				},
+			},
+			description: 'Maximum number of buckets for aggregation (1-100)',
+		},
+		{
+			displayName: 'Certificate Fingerprint',
+			name: 'fingerprint',
+			type: 'string',
+			default: '',
+			required: true,
+			displayOptions: {
+				show: {
+					operation: ['getCertificate'],
+				},
+			},
+			description: 'SHA-256 fingerprint of the certificate to retrieve',
 		},
 
 		// Tag Management parameters

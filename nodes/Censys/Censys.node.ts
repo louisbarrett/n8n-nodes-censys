@@ -34,7 +34,7 @@ export class Censys implements INodeType {
 						const query = this.getNodeParameter('query', i) as string;
 						const perPage = this.getNodeParameter('perPage', i, 50) as number;
 						const virtualHosts = this.getNodeParameter('virtualHosts', i, 'EXCLUDE') as string;
-						const sort = this.getNodeParameter('sort', i, 'RELEVANCE') as string;
+						const sort = this.getNodeParameter('sort', i, '') as string;
 						const fields = this.getNodeParameter('fields', i, '') as string;
 						const cursor = this.getNodeParameter('cursor', i, '') as string;
 
@@ -42,8 +42,17 @@ export class Censys implements INodeType {
 							q: query,
 							per_page: perPage,
 							virtual_hosts: virtualHosts,
-							sort: sort,
 						};
+
+						// Handle sort parameter - can be RELEVANCE, ASCENDING, DESCENDING for hosts
+						if (sort) {
+							const upperSort = sort.toUpperCase();
+							if (['RELEVANCE', 'ASCENDING', 'DESCENDING'].includes(upperSort)) {
+								queryParams.sort = upperSort;
+							} else {
+								queryParams.sort = sort; // For custom sort fields
+							}
+						}
 
 						if (fields) {
 							queryParams.fields = fields;
@@ -70,8 +79,8 @@ export class Censys implements INodeType {
 					}
 					case 'aggregateHosts': {
 						const query = this.getNodeParameter('query', i) as string;
-						const field = this.getNodeParameter('field', i) as string;
-						const numBuckets = this.getNodeParameter('numBuckets', i, 50) as number;
+						const field = this.getNodeParameter('fieldHost', i) as string;
+						const numBuckets = this.getNodeParameter('numBucketsHost', i, 50) as number;
 						const virtualHosts = this.getNodeParameter('virtualHosts', i, 'EXCLUDE') as string;
 
 						const queryParams: IDataObject = {
@@ -183,6 +192,91 @@ export class Censys implements INodeType {
 								method: 'GET',
 								url: `${baseUrl}/v2/hosts/${encodeURIComponent(ipAddress)}/certificates`,
 								qs: queryParams,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
+					// Certificate Operations
+					case 'searchCertificates': {
+						const query = this.getNodeParameter('query', i) as string;
+						const perPage = this.getNodeParameter('perPage', i, 50) as number;
+						const cursor = this.getNodeParameter('cursor', i, '') as string;
+						const fields = this.getNodeParameter('fields', i, '') as string;
+						const sort = this.getNodeParameter('sort', i, '') as string;
+
+						const body: IDataObject = {
+							q: query,
+							per_page: perPage,
+						};
+
+						if (cursor) {
+							body.cursor = cursor;
+						}
+
+						if (fields) {
+							// Convert comma-separated string to array
+							body.fields = fields.split(',').map(field => field.trim()).filter(field => field);
+						}
+
+						if (sort) {
+							// Convert comma-separated string to array
+							body.sort = sort.split(',').map(field => field.trim()).filter(field => field);
+						}
+
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'POST',
+								url: `${baseUrl}/v2/certificates/search`,
+								body: body,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
+					case 'aggregateCertificates': {
+						const query = this.getNodeParameter('query', i) as string;
+						const field = this.getNodeParameter('fieldCert', i) as string;
+						const numBuckets = this.getNodeParameter('numBucketsCert', i, 50) as number;
+
+						const queryParams: IDataObject = {
+							q: query,
+							field: field,
+							num_buckets: numBuckets,
+						};
+
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'GET',
+								url: `${baseUrl}/v2/certificates/aggregate`,
+								qs: queryParams,
+								json: true,
+								timeout,
+							},
+						);
+
+						result = response as IDataObject;
+						break;
+					}
+					case 'getCertificate': {
+						const fingerprint = this.getNodeParameter('fingerprint', i) as string;
+
+						const response = await this.helpers.httpRequestWithAuthentication.call(
+							this,
+							'censysApi',
+							{
+								method: 'GET',
+								url: `${baseUrl}/v2/certificates/${encodeURIComponent(fingerprint)}`,
 								json: true,
 								timeout,
 							},

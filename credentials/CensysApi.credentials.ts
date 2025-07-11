@@ -8,6 +8,7 @@ import {
 export class CensysApi implements ICredentialType {
 	name = 'censysApi';
 	displayName = 'Censys API';
+	icon = 'file:censys.png';
 	documentationUrl = 'https://search.censys.io/account/api';
 	properties: INodeProperties[] = [
 		{

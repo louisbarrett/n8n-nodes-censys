@@ -23,11 +23,13 @@
     "preserveConstEnums": true,
     "esModuleInterop": true,
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "skipLibCheck": true
   },
   "include": [
     "credentials/**/*",
-    "nodes/**/*"
+    "nodes/**/*",
+    "types.d.ts"
   ],
   "exclude": [
     "node_modules/**/*",

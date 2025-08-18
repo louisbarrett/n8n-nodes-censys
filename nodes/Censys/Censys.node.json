@@ -1,7 +1,8 @@
 {
 	"node": "n8n-nodes-censys.Censys",
 	"nodeVersion": "1.0.0",
-	"codex": {
+	"usableAsTool": true,
+        "codex": {
 		"categories": ["Security", "Network", "Data & Storage"],
 		"subcategories": {
 			"Security": ["Vulnerability Scanning", "Asset Discovery"],

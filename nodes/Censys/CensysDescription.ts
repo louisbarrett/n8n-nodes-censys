@@ -1,18 +1,19 @@
-import { INodeTypeDescription } from 'n8n-workflow';
+import { INodeTypeDescription, NodeConnectionType } from 'n8n-workflow';
 
 export const censysDescription: INodeTypeDescription = {
 	displayName: 'Censys',
 	name: 'censys',
 	icon: 'file:censys.png',
 	group: ['transform'],
+	usableAsTool: true,
 	version: 1,
 	subtitle: '={{$parameter["operation"]}}',
 	description: 'Interact with Censys Internet Search API',
 	defaults: {
 		name: 'Censys',
 	},
-	inputs: ['main'],
-	outputs: ['main'],
+	inputs: [NodeConnectionType.Main],
+	outputs: [NodeConnectionType.Main],
 	credentials: [
 		{
 			name: 'censysApi',
